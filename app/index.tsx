@@ -1,9 +1,9 @@
-import "react-native-polyfill-globals/auto";
+import { polyfill as polyfillReadableStream } from "react-native-polyfill-globals/src/readable-stream";
+import { polyfill as polyfillFetch } from "react-native-polyfill-globals/src/fetch";
 import { useCallback, useReducer, Dispatch } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
-import { TextDecoder } from "text-encoding";
 
 import { Message } from "./components/Message";
 
@@ -153,6 +153,11 @@ async function send(dispatch: Dispatch<StateAction>) {
 }
 
 export default function App() {
+  if (Platform.OS !== "web") {
+    polyfillReadableStream();
+    polyfillFetch();
+  }
+
   const [state, dispatch] = useReducer(reducer, {
     messages: [],
     step: 0,
