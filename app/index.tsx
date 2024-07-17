@@ -1,9 +1,17 @@
 import { polyfill as polyfillReadableStream } from "react-native-polyfill-globals/src/readable-stream";
 import { polyfill as polyfillFetch } from "react-native-polyfill-globals/src/fetch";
 import { useCallback, useReducer, Dispatch } from "react";
-import { StyleSheet, View, Platform } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Platform,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { TextDecoder } from "text-encoding";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { Message } from "./components/Message";
 
@@ -152,6 +160,26 @@ async function send(dispatch: Dispatch<StateAction>) {
   }
 }
 
+const renderSend = (props) => (
+  <View style={{ marginBottom: 5, marginRight: 5 }}>
+    <Icon
+      name="send"
+      size={30}
+      color="blue"
+      onPress={() => {
+        if (props.text && props.onSend) {
+          props.onSend({ text: props.text.trim() }, true);
+        }
+      }}
+    />
+  </View>
+);
+
+const renderActions = (props) => (
+  <View style={{ marginBottom: 8, marginLeft: 5 }}>
+    <Icon name="add" size={30} color="grey" />
+  </View>
+);
 export default function App() {
   if (Platform.OS !== "web") {
     polyfillReadableStream();
@@ -180,7 +208,10 @@ export default function App() {
       <StatusBar style="auto" />
       <View style={{ width: "100%", flex: 1 }}>
         <GiftedChat
+          renderActions={renderActions}
+          renderSend={renderSend}
           messages={state.messages}
+          placeholder='Type a message or type "/" for commands'
           onSend={onSend}
           user={user}
           isTyping={state.isTyping}
@@ -192,23 +223,41 @@ export default function App() {
             />
           )}
           renderBubble={(props) => (
-            <Bubble
-              {...props}
-              textStyle={{ right: { color: "#000" } }}
-              wrapperStyle={{
-                left: {
-                  width: "100%",
-                  backgroundColor: "transparent",
-                },
-                right: {
-                  width: "100%",
-                  backgroundColor: "transparent",
-                },
-              }}
-            />
+            <View>
+              <Bubble
+                {...props}
+                textStyle={{ right: { color: "#000" } }}
+                wrapperStyle={{
+                  left: {
+                    width: "100%",
+                    backgroundColor: "transparent",
+                  },
+                  right: {
+                    width: "100%",
+                    backgroundColor: "transparent",
+                  },
+                }}
+              />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  padding: 5,
+                }}
+              >
+                <TouchableOpacity>
+                  <Icon name="thumb-up" size={20} color="blue" />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Icon name="favorite" size={20} color="red" />
+                </TouchableOpacity>
+                {/* Add more reactions as needed */}
+              </View>
+            </View>
           )}
         />
       </View>
+      <Text style={styles.text}>hehe</Text>
     </View>
   );
 }
@@ -219,5 +268,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "flex-start",
+  },
+  text: {
+    fontSize: 14,
+    paddingBottom: 10,
   },
 });
