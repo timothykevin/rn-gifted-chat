@@ -8,8 +8,14 @@ import {
   TouchableOpacity,
   Text,
 } from "react-native";
+import { getDocumentAsync } from "expo-document-picker";
 import { StatusBar } from "expo-status-bar";
-import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import {
+  Actions,
+  Bubble,
+  GiftedChat,
+  InputToolbar,
+} from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
@@ -175,15 +181,10 @@ const renderSend = (props) => (
   </View>
 );
 
-const renderActions = (props) => (
-  <View style={{ marginBottom: 8, marginLeft: 5 }}>
-    <Icon name="add" size={30} color="grey" />
-  </View>
-);
 export default function App() {
   if (Platform.OS !== "web") {
-    polyfillReadableStream();
     polyfillFetch();
+    polyfillReadableStream();
   }
 
   const [state, dispatch] = useReducer(reducer, {
@@ -208,7 +209,6 @@ export default function App() {
       <StatusBar style="auto" />
       <View style={{ width: "100%", flex: 1 }}>
         <GiftedChat
-          renderActions={renderActions}
           renderSend={renderSend}
           messages={state.messages}
           placeholder='Type a message or type "/" for commands'
@@ -216,6 +216,24 @@ export default function App() {
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
+          renderInputToolbar={(props) => (
+            <InputToolbar
+              {...props}
+              renderActions={() => (
+                <Actions
+                  icon={() => (
+                    <Icon name="attach-file" size={20} color="grey" />
+                  )}
+                  onPressActionButton={async () => {
+                    const result = await getDocumentAsync({ type: "image/*" });
+                    if (!result.canceled) {
+                      console.log(result.assets);
+                    }
+                  }}
+                />
+              )}
+            />
+          )}
           renderMessage={(props) => (
             <Message
               {...props}
