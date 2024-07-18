@@ -14,6 +14,7 @@ import {
   Actions,
   Bubble,
   GiftedChat,
+  IMessage,
   InputToolbar,
 } from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
@@ -21,17 +22,23 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { Message } from "./components/Message";
 
-const user = {
-  _id: 1,
-  name: "Alice",
-};
-
 const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = Math.floor(Math.random() * 16);
     const v = c === "x" ? r : (r % 4) + 8;
     return v.toString(16);
   });
+};
+
+const user = {
+  _id: 1,
+  name: "Alice",
+};
+
+const ai = {
+  _id: 2,
+  name: "Chatbot",
+  avatar: require("../assets/avatar.png"),
 };
 
 const decoder = new TextDecoder();
@@ -90,11 +97,7 @@ function reducer(state: IState, action: StateAction) {
         _id: id,
         text: chunk,
         createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "Chatbot",
-          avatar: require("../assets/avatar.png"),
-        },
+        user: ai,
       };
       return {
         ...state,
@@ -195,7 +198,7 @@ export default function App() {
     isTyping: false,
   });
 
-  const onSend = useCallback(
+  const onSendText = useCallback(
     (messages: any[]) => {
       const sentMessages = [{ ...messages[0], sent: true, received: true }];
       const newMessages = GiftedChat.append(state.messages, sentMessages);
@@ -204,6 +207,24 @@ export default function App() {
     },
     [dispatch, state.messages]
   );
+
+  const onSendImage = useCallback((image?: string) => {
+    const sentMessages: IMessage[] = [
+      {
+        _id: uuidv4(),
+        createdAt: new Date(),
+        user: ai,
+        text: "",
+        image,
+        sent: true,
+        received: true,
+      },
+    ];
+    const newMessages = GiftedChat.append(state.messages, sentMessages);
+    dispatch({ type: ActionKind.SEND_MESSAGE, payload: newMessages });
+    send(dispatch);
+  }, []);
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
@@ -212,7 +233,7 @@ export default function App() {
           renderSend={renderSend}
           messages={state.messages}
           placeholder='Type a message or type "/" for commands'
-          onSend={onSend}
+          onSend={onSendText}
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
@@ -227,7 +248,7 @@ export default function App() {
                   onPressActionButton={async () => {
                     const result = await getDocumentAsync({ type: "image/*" });
                     if (!result.canceled) {
-                      console.log(result.assets);
+                      onSendImage(result.assets[0].uri);
                     }
                   }}
                 />
