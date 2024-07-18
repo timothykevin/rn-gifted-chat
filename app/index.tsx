@@ -7,11 +7,11 @@ import {
   Platform,
   TouchableOpacity,
   Text,
+  Image,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { Bubble, GiftedChat, Send } from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
-import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { Message } from "./components/Message";
 
@@ -160,24 +160,38 @@ async function send(dispatch: Dispatch<StateAction>) {
   }
 }
 
-const renderSend = (props) => (
-  <View style={{ marginBottom: 5, marginRight: 5 }}>
-    <Icon
-      name="send"
-      size={30}
-      color="blue"
-      onPress={() => {
-        if (props.text && props.onSend) {
-          props.onSend({ text: props.text.trim() }, true);
-        }
+const renderSend = (props) => {
+  return (
+    <Send {...props} containerStyle={{ justifyContent: "center" }}>
+      <View style={{ marginTop: 4, marginRight: 9 }}>
+        <Image source={require("../assets/button.png")} style={styles.image} />
+      </View>
+    </Send>
+  );
+};
+
+const renderCustomView = (props) => {
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-around",
+        padding: 5,
       }}
-    />
-  </View>
-);
+    >
+      <TouchableOpacity>
+        <Image source={require("../assets/button.png")} style={styles.image} />
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 const renderActions = (props) => (
-  <View style={{ marginBottom: 8, marginLeft: 5 }}>
-    <Icon name="add" size={30} color="grey" />
+  <View style={{ marginLeft: 8, marginBottom: 11 }}>
+    <Image
+      source={require("../assets/plus_icon.png")}
+      style={styles.image_reaction}
+    />
   </View>
 );
 export default function App() {
@@ -213,47 +227,16 @@ export default function App() {
           messages={state.messages}
           placeholder='Type a message or type "/" for commands'
           onSend={onSend}
+          alwaysShowSend
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
           renderMessage={(props) => (
             <Message
               {...props}
+              position="left"
               userType={props.user._id === 1 ? "human" : "ai"}
             />
-          )}
-          renderBubble={(props) => (
-            <View>
-              <Bubble
-                {...props}
-                textStyle={{ right: { color: "#000" } }}
-                wrapperStyle={{
-                  left: {
-                    width: "100%",
-                    backgroundColor: "transparent",
-                  },
-                  right: {
-                    width: "100%",
-                    backgroundColor: "transparent",
-                  },
-                }}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  padding: 5,
-                }}
-              >
-                <TouchableOpacity>
-                  <Icon name="thumb-up" size={20} color="blue" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Icon name="favorite" size={20} color="red" />
-                </TouchableOpacity>
-                {/* Add more reactions as needed */}
-              </View>
-            </View>
           )}
         />
       </View>
@@ -271,6 +254,18 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    paddingBottom: 10,
+    paddingBottom: 8,
+  },
+  image: {
+    width: 30, // specify your desired width
+    height: 30, // specify your desired height
+  },
+  image_reaction: {
+    width: 20, // specify your desired width
+    height: 20, // specify your desired height
+  },
+  avatar_bot: {
+    width: 10,
+    height: 10,
   },
 });
