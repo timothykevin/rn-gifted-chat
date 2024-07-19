@@ -5,15 +5,17 @@ import {
   StyleSheet,
   View,
   Platform,
-  TouchableOpacity,
   Text,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Bubble, GiftedChat, Send } from "react-native-gifted-chat";
+import { GiftedChat, Send, InputToolbar } from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
 
 import { Message } from "./components/Message";
+import { WelcomePage } from "./components/WelcomePage";
+import { Header } from "./components/Header";
 
 const user = {
   _id: 1,
@@ -170,29 +172,13 @@ const renderSend = (props) => {
   );
 };
 
-const renderCustomView = (props) => {
-  return (
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-around",
-        padding: 5,
-      }}
-    >
-      <TouchableOpacity>
-        <Image source={require("../assets/button.png")} style={styles.image} />
-      </TouchableOpacity>
-    </View>
-  );
-};
-
 const renderActions = (props) => (
-  <View style={{ marginLeft: 8, marginBottom: 11 }}>
+  <TouchableOpacity style={{ marginLeft: 8, marginBottom: 11 }}>
     <Image
-      source={require("../assets/plus_icon.png")}
+      source={require("../assets/paperclip.png")}
       style={styles.image_reaction}
     />
-  </View>
+  </TouchableOpacity>
 );
 export default function App() {
   if (Platform.OS !== "web") {
@@ -220,6 +206,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+      <Header></Header>
       <View style={{ width: "100%", flex: 1 }}>
         <GiftedChat
           renderActions={renderActions}
@@ -228,9 +215,14 @@ export default function App() {
           placeholder='Type a message or type "/" for commands'
           onSend={onSend}
           alwaysShowSend
+          showAvatarForEveryMessage
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
+          renderChatEmpty={() => <WelcomePage></WelcomePage>}
+          renderInputToolbar={(props) => (
+            <InputToolbar {...props} primaryStyle={styles.text_input} />
+          )}
           renderMessage={(props) => (
             <Message
               {...props}
@@ -240,32 +232,43 @@ export default function App() {
           )}
         />
       </View>
-      <Text style={styles.text}>hehe</Text>
+      <Text style={styles.text}>
+        Informasi dari AI tentang orang, tempat, atau fakta dapat tidak akurat.
+        Didukung oleh Teknologi GPT.
+      </Text>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "flex-start",
   },
   text: {
+    fontFamily: "Inter_400Regular",
     fontSize: 14,
     paddingBottom: 8,
+    textAlign: "center",
   },
   image: {
-    width: 30, // specify your desired width
-    height: 30, // specify your desired height
+    width: 32,
+    height: 32,
   },
   image_reaction: {
-    width: 20, // specify your desired width
-    height: 20, // specify your desired height
+    width: 20,
+    height: 20,
   },
   avatar_bot: {
     width: 10,
     height: 10,
+  },
+  text_input: {
+    width: 335,
+    height: 64,
+    padding: 12,
+    margin: 24,
+    borderWidth: 1,
+    borderRadius: 6,
   },
 });
