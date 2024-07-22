@@ -5,15 +5,17 @@ import {
   StyleSheet,
   View,
   Platform,
-  TouchableOpacity,
   Text,
+  Image,
+  TouchableOpacity,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, Send, InputToolbar } from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
-import Icon from "react-native-vector-icons/MaterialIcons";
 
 import { Message } from "./components/Message";
+import { WelcomePage } from "./components/WelcomePage";
+import { Header } from "./components/Header";
 
 const user = {
   _id: 1,
@@ -160,25 +162,23 @@ async function send(dispatch: Dispatch<StateAction>) {
   }
 }
 
-const renderSend = (props) => (
-  <View style={{ marginBottom: 5, marginRight: 5 }}>
-    <Icon
-      name="send"
-      size={30}
-      color="blue"
-      onPress={() => {
-        if (props.text && props.onSend) {
-          props.onSend({ text: props.text.trim() }, true);
-        }
-      }}
-    />
-  </View>
-);
+const renderSend = (props) => {
+  return (
+    <Send {...props} containerStyle={{ justifyContent: "center" }}>
+      <View style={{ marginTop: 4, marginRight: 9 }}>
+        <Image source={require("../assets/button.png")} style={styles.image} />
+      </View>
+    </Send>
+  );
+};
 
 const renderActions = (props) => (
-  <View style={{ marginBottom: 8, marginLeft: 5 }}>
-    <Icon name="add" size={30} color="grey" />
-  </View>
+  <TouchableOpacity style={{ marginLeft: 8, marginBottom: 11 }}>
+    <Image
+      source={require("../assets/paperclip.png")}
+      style={styles.image_reaction}
+    />
+  </TouchableOpacity>
 );
 export default function App() {
   if (Platform.OS !== "web") {
@@ -206,6 +206,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
+      <Header></Header>
       <View style={{ width: "100%", flex: 1 }}>
         <GiftedChat
           renderActions={renderActions}
@@ -213,64 +214,61 @@ export default function App() {
           messages={state.messages}
           placeholder='Type a message or type "/" for commands'
           onSend={onSend}
+          alwaysShowSend
+          showAvatarForEveryMessage
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
+          renderChatEmpty={() => <WelcomePage></WelcomePage>}
+          renderInputToolbar={(props) => (
+            <InputToolbar {...props} primaryStyle={styles.text_input} />
+          )}
           renderMessage={(props) => (
             <Message
               {...props}
+              position="left"
               userType={props.user._id === 1 ? "human" : "ai"}
             />
           )}
-          renderBubble={(props) => (
-            <View>
-              <Bubble
-                {...props}
-                textStyle={{ right: { color: "#000" } }}
-                wrapperStyle={{
-                  left: {
-                    width: "100%",
-                    backgroundColor: "transparent",
-                  },
-                  right: {
-                    width: "100%",
-                    backgroundColor: "transparent",
-                  },
-                }}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  padding: 5,
-                }}
-              >
-                <TouchableOpacity>
-                  <Icon name="thumb-up" size={20} color="blue" />
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <Icon name="favorite" size={20} color="red" />
-                </TouchableOpacity>
-                {/* Add more reactions as needed */}
-              </View>
-            </View>
-          )}
         />
       </View>
-      <Text style={styles.text}>hehe</Text>
+      <Text style={styles.text}>
+        Informasi dari AI tentang orang, tempat, atau fakta dapat tidak akurat.
+        Didukung oleh Teknologi GPT.
+      </Text>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "flex-start",
   },
   text: {
+    fontFamily: "Inter_400Regular",
     fontSize: 14,
-    paddingBottom: 10,
+    paddingBottom: 8,
+    textAlign: "center",
+  },
+  image: {
+    width: 32,
+    height: 32,
+  },
+  image_reaction: {
+    width: 20,
+    height: 20,
+  },
+  avatar_bot: {
+    width: 10,
+    height: 10,
+  },
+  text_input: {
+    width: 335,
+    height: 64,
+    padding: 12,
+    margin: 24,
+    borderWidth: 1,
+    borderRadius: 6,
   },
 });
