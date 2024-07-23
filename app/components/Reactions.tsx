@@ -118,7 +118,7 @@ export const Reactions: React.FC<ReactionsProps> = (props) => {
           }}
         >
           <View style={styles.centered_view}>
-            <View style={styles.modalView}>
+            <View style={styles.modal_view}>
               <View style={styles.modal_header}>
                 <Text style={styles.modal_header_text}>More reason</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     width: 287,
     height: 326,
   },
-  modalView: {
+  modal_view: {
     margin: 20,
     backgroundColor: "white",
     padding: 35,
