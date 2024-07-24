@@ -1,21 +1,25 @@
-import { StyleSheet, View } from 'react-native'
-import { Composer, InputToolbar, InputToolbarProps } from 'react-native-gifted-chat';
-import { DocumentPickerAsset } from 'expo-document-picker'
+import { StyleSheet, View } from "react-native";
+import {
+  Composer,
+  InputToolbar,
+  InputToolbarProps,
+} from "react-native-gifted-chat";
+import { DocumentPickerAsset } from "expo-document-picker";
 
-import { Files } from './Files'
-import { TMessage } from './types'
+import { Files } from "./Files";
+import { TMessage } from "./types";
 
 interface InputFooterProps extends InputToolbarProps<TMessage> {
-  files: DocumentPickerAsset[]
-  onDelete: (fileName: string) => void
+  files: DocumentPickerAsset[];
+  onDelete: (fileName: string) => void;
 }
 
 export const InputFooter = (props: InputFooterProps) => {
-  const { files, onDelete, ...inputProps } = props
+  const { files, onDelete, ...inputProps } = props;
   return (
-    <InputToolbar 
-      {...inputProps} 
-      primaryStyle={[styles.input_container]} 
+    <InputToolbar
+      {...inputProps}
+      primaryStyle={[styles.input_container]}
       renderComposer={(composerProps) => (
         <View style={styles.input_composer}>
           <Files files={files} onDelete={onDelete} />
@@ -23,8 +27,8 @@ export const InputFooter = (props: InputFooterProps) => {
         </View>
       )}
     />
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   input_container: {
@@ -34,6 +38,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   input_composer: {
-    flex: 1
-  }
-})
+    flex: 1,
+  },
+});

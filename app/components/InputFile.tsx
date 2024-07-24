@@ -1,11 +1,11 @@
-import { Image, TouchableOpacity } from 'react-native'
+import { Image, TouchableOpacity } from "react-native";
 
 interface InputFileProps {
-  onFileSelected: () => void
+  onFileSelected: () => void;
 }
 
 export const InputFile = (props: InputFileProps) => {
-  const { onFileSelected } = props
+  const { onFileSelected } = props;
   return (
     <TouchableOpacity
       style={{ marginLeft: 8, marginBottom: 11 }}
@@ -13,8 +13,8 @@ export const InputFile = (props: InputFileProps) => {
     >
       <Image
         source={require("../../assets/paperclip.png")}
-        style={{ width: 20, height: 20}}
+        style={{ width: 20, height: 20 }}
       />
     </TouchableOpacity>
-  )
-}
+  );
+};

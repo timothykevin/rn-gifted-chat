@@ -1,6 +1,6 @@
 import { DocumentPickerAsset } from "expo-document-picker";
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { StyleSheet, View } from "react-native";
 import {
   Avatar,
   Bubble,
@@ -12,7 +12,7 @@ import { Attachments } from "./Attachments";
 
 interface MessageProps extends GiftedMessageProps<IMessage> {
   userType: "human" | "ai";
-  attachments?: DocumentPickerAsset[]
+  attachments?: DocumentPickerAsset[];
 }
 
 export const Message: React.FC<MessageProps> = (props) => {
@@ -42,10 +42,10 @@ export const Message: React.FC<MessageProps> = (props) => {
   };
 
   const renderAttachments = () => {
-    const { attachments } = props
-    if (!attachments?.length) return null
-    return <Attachments attachments={attachments} />
-  }
+    const { attachments } = props;
+    if (!attachments?.length) return null;
+    return <Attachments attachments={attachments} />;
+  };
 
   return (
     <View style={styles.container}>

@@ -1,24 +1,18 @@
 import { polyfill as polyfillReadableStream } from "react-native-polyfill-globals/src/readable-stream";
 import { polyfill as polyfillFetch } from "react-native-polyfill-globals/src/fetch";
 import { useCallback, useReducer, Dispatch } from "react";
-import {
-  StyleSheet,
-  View,
-  Platform,
-  Text,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Platform, Text, Image } from "react-native";
 import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
 import { StatusBar } from "expo-status-bar";
 import { GiftedChat, MessageProps, Send } from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
 
-import { InputFile } from './components/InputFile'
+import { InputFile } from "./components/InputFile";
 import { InputFooter } from "./components/InputFooter";
 import { Message } from "./components/Message";
 import { WelcomePage } from "./components/WelcomePage";
 import { Header } from "./components/Header";
-import { ActionKind, IState, StateAction, TMessage } from './components/types'
+import { ActionKind, IState, StateAction, TMessage } from "./components/types";
 
 const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -50,10 +44,18 @@ function reducer(state: IState, action: StateAction) {
       return { ...state, files: [] };
     }
     case ActionKind.REMOVE_FILE: {
-      return { ...state, files: state.files.filter((file) => file.name !== action.payload as string) };
+      return {
+        ...state,
+        files: state.files.filter(
+          (file) => file.name !== (action.payload as string)
+        ),
+      };
     }
     case ActionKind.ADD_FILE: {
-      return { ...state, files: [...state.files, ...(action.payload as DocumentPickerAsset[])] };
+      return {
+        ...state,
+        files: [...state.files, ...(action.payload as DocumentPickerAsset[])],
+      };
     }
     case ActionKind.SEND_MESSAGE: {
       return {
@@ -63,7 +65,7 @@ function reducer(state: IState, action: StateAction) {
       };
     }
     case ActionKind.APPEND_MESSAGE_CHUNK: {
-      const { chunk, id } = action.payload as { chunk: string; id: string }
+      const { chunk, id } = action.payload as { chunk: string; id: string };
       const found = state.messages.find((m) => m._id === id);
       if (found) {
         return {
@@ -185,12 +187,14 @@ export default function App() {
       if (state.files.length) {
         dispatch({ type: ActionKind.RESET_FILES });
       }
-      const sentMessages = [{
-        ...messages[0], 
-        sent: true, 
-        received: true,
-        attachments: state.files
-      }];
+      const sentMessages = [
+        {
+          ...messages[0],
+          sent: true,
+          received: true,
+          attachments: state.files,
+        },
+      ];
       const newMessages = GiftedChat.append(state.messages, sentMessages);
       dispatch({ type: ActionKind.SEND_MESSAGE, payload: newMessages });
       send(dispatch);
@@ -203,7 +207,7 @@ export default function App() {
     if (!result.canceled) {
       dispatch({ type: ActionKind.ADD_FILE, payload: result.assets });
     }
-  }, [])
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -223,10 +227,12 @@ export default function App() {
           renderAvatarOnTop
           renderChatEmpty={() => <WelcomePage />}
           renderInputToolbar={(props) => (
-            <InputFooter 
+            <InputFooter
               {...props}
-              files={state.files} 
-              onDelete={(fileName) => dispatch({ type: ActionKind.REMOVE_FILE, payload: fileName })}
+              files={state.files}
+              onDelete={(fileName) =>
+                dispatch({ type: ActionKind.REMOVE_FILE, payload: fileName })
+              }
             />
           )}
           renderMessage={(props: MessageProps<TMessage>) => (
@@ -265,5 +271,5 @@ const styles = StyleSheet.create({
   avatar_bot: {
     width: 10,
     height: 10,
-  }
+  },
 });
