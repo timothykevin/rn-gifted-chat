@@ -212,6 +212,7 @@ export default function App() {
           renderActions={renderActions}
           renderSend={renderSend}
           messages={state.messages}
+          messagesContainerStyle={{}}
           placeholder='Type a message or type "/" for commands'
           onSend={onSend}
           alwaysShowSend
@@ -233,8 +234,8 @@ export default function App() {
         />
       </View>
       <Text style={styles.text}>
-        Informasi dari AI tentang orang, tempat, atau fakta dapat tidak akurat.
-        Didukung oleh Teknologi GPT.
+        Information from AI about people, places, or facts may be inaccurate.
+        Powered by GPT technology.
       </Text>
     </View>
   );
