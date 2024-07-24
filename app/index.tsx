@@ -1,6 +1,6 @@
 import { polyfill as polyfillReadableStream } from "react-native-polyfill-globals/src/readable-stream";
 import { polyfill as polyfillFetch } from "react-native-polyfill-globals/src/fetch";
-import { useCallback, useReducer, Dispatch } from "react";
+import { useCallback, useReducer, Dispatch, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  TextInput,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { GiftedChat, Send, InputToolbar } from "react-native-gifted-chat";
@@ -162,24 +163,6 @@ async function send(dispatch: Dispatch<StateAction>) {
   }
 }
 
-const renderSend = (props) => {
-  return (
-    <Send {...props} containerStyle={{ justifyContent: "center" }}>
-      <View style={{ marginTop: 4, marginRight: 9 }}>
-        <Image source={require("../assets/button.png")} style={styles.image} />
-      </View>
-    </Send>
-  );
-};
-
-const renderActions = (props) => (
-  <TouchableOpacity style={{ marginLeft: 8, marginBottom: 11 }}>
-    <Image
-      source={require("../assets/paperclip.png")}
-      style={styles.image_reaction}
-    />
-  </TouchableOpacity>
-);
 export default function App() {
   if (Platform.OS !== "web") {
     polyfillReadableStream();
@@ -194,6 +177,47 @@ export default function App() {
     isTyping: false,
   });
 
+  const [inputText, setInputText] = useState("");
+
+  const renderSend = (props) => {
+    return (
+      <Send {...props} containerStyle={{ justifyContent: "center" }}>
+        <View style={{ marginTop: 4, marginRight: 9 }}>
+          <Image
+            source={
+              inputText.trim().length > 0
+                ? require("../assets/button.png")
+                : require("../assets/microphone.png")
+            }
+            style={styles.image}
+          />
+        </View>
+      </Send>
+    );
+  };
+
+  const renderActions = (props) => (
+    <TouchableOpacity style={{ marginLeft: 8, marginBottom: 11 }}>
+      <Image
+        source={require("../assets/paperclip.png")}
+        style={styles.image_reaction}
+      />
+    </TouchableOpacity>
+  );
+
+  const renderComposer = (props) => (
+    <TextInput
+      {...props}
+      style={{
+        flex: 1,
+        padding: 10,
+      }}
+      placeholder='Type a message or type "/" for commands'
+      onChangeText={(text) => setInputText(text)}
+      value={inputText}
+    />
+  );
+
   const onSend = useCallback(
     (messages: any[]) => {
       const sentMessages = [{ ...messages[0], sent: true, received: true }];
@@ -203,22 +227,23 @@ export default function App() {
     },
     [dispatch, state.messages]
   );
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Header></Header>
       <View style={{ width: "100%", flex: 1 }}>
         <GiftedChat
-          renderActions={renderActions}
-          renderSend={renderSend}
           messages={state.messages}
-          placeholder='Type a message or type "/" for commands'
           onSend={onSend}
           alwaysShowSend
+          renderActions={renderActions}
+          renderSend={renderSend}
           showAvatarForEveryMessage
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
+          onInputTextChanged={(text) => setInputText(text)}
           renderChatEmpty={() => <WelcomePage></WelcomePage>}
           renderInputToolbar={(props) => (
             <InputToolbar {...props} primaryStyle={styles.text_input} />
@@ -252,8 +277,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   image: {
-    width: 32,
-    height: 32,
+    width: 25,
+    height: 25,
   },
   image_reaction: {
     width: 20,
@@ -266,7 +291,7 @@ const styles = StyleSheet.create({
   text_input: {
     width: 335,
     height: 64,
-    padding: 12,
+    padding: 10,
     margin: 24,
     borderWidth: 1,
     borderRadius: 6,
