@@ -221,11 +221,12 @@ export default function App() {
       <Header></Header>
       <View style={{ width: "100%", flex: 1 }}>
         <GiftedChat
-          messages={state.messages}
-          onSend={onSend}
-          alwaysShowSend
           renderActions={renderActions}
           renderSend={renderSend}
+          messages={state.messages}
+          placeholder='Type a message or type "/" for commands'
+          onSend={onSend}
+          alwaysShowSend
           showAvatarForEveryMessage
           user={user}
           isTyping={state.isTyping}
