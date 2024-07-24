@@ -205,19 +205,6 @@ export default function App() {
     </TouchableOpacity>
   );
 
-  const renderComposer = (props) => (
-    <TextInput
-      {...props}
-      style={{
-        flex: 1,
-        padding: 10,
-      }}
-      placeholder='Type a message or type "/" for commands'
-      onChangeText={(text) => setInputText(text)}
-      value={inputText}
-    />
-  );
-
   const onSend = useCallback(
     (messages: any[]) => {
       const sentMessages = [{ ...messages[0], sent: true, received: true }];
