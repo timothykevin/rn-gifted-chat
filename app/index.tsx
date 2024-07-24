@@ -1,26 +1,18 @@
 import { polyfill as polyfillReadableStream } from "react-native-polyfill-globals/src/readable-stream";
 import { polyfill as polyfillFetch } from "react-native-polyfill-globals/src/fetch";
 import { useCallback, useReducer, Dispatch } from "react";
-import {
-  StyleSheet,
-  View,
-  Platform,
-  Text,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Platform, Text, Image } from "react-native";
+import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
 import { StatusBar } from "expo-status-bar";
-import { GiftedChat, Send, InputToolbar } from "react-native-gifted-chat";
+import { GiftedChat, MessageProps, Send } from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
 
+import { InputFile } from "./components/InputFile";
+import { InputFooter } from "./components/InputFooter";
 import { Message } from "./components/Message";
 import { WelcomePage } from "./components/WelcomePage";
 import { Header } from "./components/Header";
-
-const user = {
-  _id: 1,
-  name: "Alice",
-};
+import { ActionKind, IState, StateAction, TMessage } from "./components/types";
 
 const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -30,43 +22,50 @@ const uuidv4 = () => {
   });
 };
 
+const user = {
+  _id: 1,
+  name: "Alice",
+};
+
+const ai = {
+  _id: 2,
+  name: "Chatbot",
+  avatar: require("../assets/avatar.png"),
+};
+
 const decoder = new TextDecoder();
 export function decodeAIStreamChunk(chunk?: Uint8Array): string {
   return chunk ? decoder.decode(chunk) : "";
 }
 
-interface IState {
-  messages: any[];
-  step: number;
-  loadEarlier?: boolean;
-  isLoadingEarlier?: boolean;
-  isTyping: boolean;
-}
-
-enum ActionKind {
-  SEND_MESSAGE = "SEND_MESSAGE",
-  APPEND_MESSAGE_CHUNK = "APPEND_MESSAGE_CHUNK",
-  LOAD_EARLIER_MESSAGES = "LOAD_EARLIER_MESSAGES",
-  LOAD_EARLIER_START = "LOAD_EARLIER_START",
-  SET_IS_TYPING = "SET_IS_TYPING",
-}
-
-interface StateAction {
-  type: ActionKind;
-  payload?: any;
-}
-
 function reducer(state: IState, action: StateAction) {
   switch (action.type) {
+    case ActionKind.RESET_FILES: {
+      return { ...state, files: [] };
+    }
+    case ActionKind.REMOVE_FILE: {
+      return {
+        ...state,
+        files: state.files.filter(
+          (file) => file.name !== (action.payload as string)
+        ),
+      };
+    }
+    case ActionKind.ADD_FILE: {
+      return {
+        ...state,
+        files: [...state.files, ...(action.payload as DocumentPickerAsset[])],
+      };
+    }
     case ActionKind.SEND_MESSAGE: {
       return {
         ...state,
         step: state.step + 1,
-        messages: action.payload,
+        messages: action.payload as TMessage[],
       };
     }
     case ActionKind.APPEND_MESSAGE_CHUNK: {
-      const { chunk, id } = action.payload;
+      const { chunk, id } = action.payload as { chunk: string; id: string };
       const found = state.messages.find((m) => m._id === id);
       if (found) {
         return {
@@ -86,11 +85,7 @@ function reducer(state: IState, action: StateAction) {
         _id: id,
         text: chunk,
         createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "Chatbot",
-          avatar: require("../assets/avatar.png"),
-        },
+        user: ai,
       };
       return {
         ...state,
@@ -102,7 +97,7 @@ function reducer(state: IState, action: StateAction) {
         ...state,
         loadEarlier: true,
         isLoadingEarlier: false,
-        messages: action.payload,
+        messages: action.payload as TMessage[],
       };
     }
     case ActionKind.LOAD_EARLIER_START: {
@@ -114,7 +109,7 @@ function reducer(state: IState, action: StateAction) {
     case ActionKind.SET_IS_TYPING: {
       return {
         ...state,
-        isTyping: action.payload,
+        isTyping: action.payload as boolean,
       };
     }
   }
@@ -172,62 +167,80 @@ const renderSend = (props) => {
   );
 };
 
-const renderActions = (props) => (
-  <TouchableOpacity style={{ marginLeft: 8, marginBottom: 11 }}>
-    <Image
-      source={require("../assets/paperclip.png")}
-      style={styles.image_reaction}
-    />
-  </TouchableOpacity>
-);
 export default function App() {
   if (Platform.OS !== "web") {
-    polyfillReadableStream();
     polyfillFetch();
+    polyfillReadableStream();
   }
 
   const [state, dispatch] = useReducer(reducer, {
     messages: [],
+    files: [],
     step: 0,
     loadEarlier: true,
     isLoadingEarlier: false,
     isTyping: false,
   });
 
-  const onSend = useCallback(
-    (messages: any[]) => {
-      const sentMessages = [{ ...messages[0], sent: true, received: true }];
+  const onSendText = useCallback(
+    (messages: TMessage[]) => {
+      if (state.files.length) {
+        dispatch({ type: ActionKind.RESET_FILES });
+      }
+      const sentMessages = [
+        {
+          ...messages[0],
+          sent: true,
+          received: true,
+          attachments: state.files,
+        },
+      ];
       const newMessages = GiftedChat.append(state.messages, sentMessages);
       dispatch({ type: ActionKind.SEND_MESSAGE, payload: newMessages });
       send(dispatch);
     },
-    [dispatch, state.messages]
+    [state.files, state.messages]
   );
+
+  const onSelectFile = useCallback(async () => {
+    const result = await getDocumentAsync();
+    if (!result.canceled) {
+      dispatch({ type: ActionKind.ADD_FILE, payload: result.assets });
+    }
+  }, []);
+
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
       <Header></Header>
       <View style={{ width: "100%", flex: 1 }}>
-        <GiftedChat
-          renderActions={renderActions}
+        <GiftedChat<TMessage>
+          renderActions={() => <InputFile onFileSelected={onSelectFile} />}
           renderSend={renderSend}
           messages={state.messages}
           placeholder='Type a message or type "/" for commands'
-          onSend={onSend}
+          onSend={onSendText}
           alwaysShowSend
           showAvatarForEveryMessage
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
-          renderChatEmpty={() => <WelcomePage></WelcomePage>}
+          renderChatEmpty={() => <WelcomePage />}
           renderInputToolbar={(props) => (
-            <InputToolbar {...props} primaryStyle={styles.text_input} />
+            <InputFooter
+              {...props}
+              files={state.files}
+              onDelete={(fileName) =>
+                dispatch({ type: ActionKind.REMOVE_FILE, payload: fileName })
+              }
+            />
           )}
-          renderMessage={(props) => (
+          renderMessage={(props: MessageProps<TMessage>) => (
             <Message
               {...props}
               position="left"
               userType={props.user._id === 1 ? "human" : "ai"}
+              attachments={props.currentMessage?.attachments}
             />
           )}
         />
@@ -255,20 +268,8 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
   },
-  image_reaction: {
-    width: 20,
-    height: 20,
-  },
   avatar_bot: {
     width: 10,
     height: 10,
-  },
-  text_input: {
-    width: 335,
-    height: 64,
-    padding: 12,
-    margin: 24,
-    borderWidth: 1,
-    borderRadius: 6,
   },
 });
