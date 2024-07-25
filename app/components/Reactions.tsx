@@ -8,7 +8,6 @@ import {
   Alert,
   Modal,
   TextInput,
-  Button,
   Pressable,
 } from "react-native";
 import {
@@ -48,7 +47,11 @@ export const Reactions: React.FC<ReactionsProps> = (props) => {
         </TouchableOpacity>
         <TouchableOpacity onPress={showDislikeDetails}>
           <Image
-            source={require("../../assets/not_good.png")}
+            source={
+              dislikeClicked
+                ? require("../../assets/bad response clicked.png")
+                : require("../../assets/not_good.png")
+            }
             style={styles.image_reaction}
             resizeMode="contain"
           />
@@ -76,17 +79,12 @@ export const Reactions: React.FC<ReactionsProps> = (props) => {
     return showReactions ? botReactionsButton : humanReactionsButton;
   };
 
-  const [isOption1, setOption1] = useState(false);
-  const [feedbackStyle, setFeedbackStyle] = useState(styles.feedback);
-  const [feedbacktext_style, setFeedbacktext_style] = useState({});
+  const [selectedFeedback, setSelectedFeedback] = useState<string | null>(null);
+  const handleOptionClick = (option: string) => {
+    setSelectedFeedback(selectedFeedback === option ? null : option);
+  };
 
   const [modalVisible, setModalVisible] = useState(false);
-
-  const handleOption1Click = () => {
-    setOption1(!isOption1);
-    setFeedbackStyle(isOption1 ? styles.feedback_choosen : styles.feedback);
-    setFeedbacktext_style(isOption1 ? styles.text_choosen : {});
-  };
 
   const dislikeDetailsView = (
     <View>
@@ -94,28 +92,31 @@ export const Reactions: React.FC<ReactionsProps> = (props) => {
         <Text style={styles.tell_us_text}> Tell us more:</Text>
       </View>
       <View style={styles.feedback_details_view}>
-        <TouchableOpacity style={feedbackStyle} onPress={handleOption1Click}>
-          <Text style={feedbacktext_style}> Don't like the style</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.feedback}>
-          <Text> Not factually correct</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.feedback}>
-          <Text> Hallucinated answer</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.feedback}>
-          <Text> Not factually correct</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.feedback}>
-          <Text> Didn't fully follow instructions</Text>
-        </TouchableOpacity>
+        {[
+          "Don't like the style",
+          "Not factually correct",
+          "Hallucinated answer",
+          "Didn't fully follow instructions",
+        ].map((text, index) => (
+          <TouchableOpacity
+            key={index}
+            style={
+              selectedFeedback === text
+                ? styles.feedback_choosen
+                : styles.feedback
+            }
+            onPress={() => handleOptionClick(text)}
+          >
+            <Text style={selectedFeedback === text ? styles.text_choosen : {}}>
+              {text}
+            </Text>
+          </TouchableOpacity>
+        ))}
         <Modal
           animationType="fade"
           transparent={true}
           visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
+          onRequestClose={() => setModalVisible(!modalVisible)}
         >
           <View style={styles.centered_view}>
             <View style={styles.modal_view}>
@@ -130,21 +131,31 @@ export const Reactions: React.FC<ReactionsProps> = (props) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.modal_more_response}>
-                <TouchableOpacity style={styles.feedback}>
-                  <Text> Don't Know</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.feedback}>
-                  <Text> Confused</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.feedback}>
-                  <Text> Same as before</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.feedback}>
-                  <Text> Not Sure</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.feedback}>
-                  <Text> Don't feel happy</Text>
-                </TouchableOpacity>
+                {[
+                  "Don't Know",
+                  "Confused",
+                  "Same as before",
+                  "Not Sure",
+                  "Don't feel happy",
+                ].map((text, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={
+                      selectedFeedback === text
+                        ? styles.feedback_choosen
+                        : styles.feedback
+                    }
+                    onPress={() => handleOptionClick(text)}
+                  >
+                    <Text
+                      style={
+                        selectedFeedback === text ? styles.text_choosen : {}
+                      }
+                    >
+                      {text}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
               </View>
               <View style={styles.modal_textbox_more_reason}>
                 <Text style={styles.modal_textbox_text}>More reason</Text>
