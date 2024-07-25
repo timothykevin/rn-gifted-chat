@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   Pressable,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { DocumentPickerAsset } from "expo-document-picker";
 import {
@@ -39,6 +40,11 @@ export const Message: React.FC<MessageProps> = (props) => {
 
   const changeToMoreBadResponseModal = () => {
     setChoosenModal("MoreBadResponse");
+  };
+
+  const handleTouchOutsideModal = () => {
+    setModalVisible(false);
+    setChoosenModal(null);
   };
 
   const handleScroll = (event) => {
@@ -84,6 +90,13 @@ export const Message: React.FC<MessageProps> = (props) => {
   const renderBadResponseModal = () => {
     return (
       <View>
+        <TouchableOpacity style={{ paddingTop: 20, paddingBottom: 10 }}>
+          <Image
+            source={require("../../assets/Rectangle 8.png")}
+            style={styles.dropdown_icon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
         <View style={styles.modal_dislike_header}>
           <Image
             source={require("../../assets/not_good.png")}
@@ -129,6 +142,13 @@ export const Message: React.FC<MessageProps> = (props) => {
   const renderMoreBadResponseModal = () => {
     return (
       <View>
+        <TouchableOpacity style={{ paddingTop: 20, paddingBottom: 10 }}>
+          <Image
+            source={require("../../assets/Rectangle 8.png")}
+            style={styles.dropdown_icon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
         <View style={styles.modal_dislike_header}>
           <Image
             source={require("../../assets/not_good.png")}
@@ -169,9 +189,9 @@ export const Message: React.FC<MessageProps> = (props) => {
             placeholder="Write another reason here"
           />
         </View>
-        <Pressable style={styles.more_reason_submit_button}>
+        <TouchableOpacity style={styles.more_reason_submit_button}>
           <Text style={styles.submit_text}>Send</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -179,11 +199,13 @@ export const Message: React.FC<MessageProps> = (props) => {
   const renderOnLongPressReactionModal = () => {
     return (
       <View>
-        <Image
-          source={require("../../assets/Rectangle 8.png")}
-          style={styles.dropdown_icon}
-          resizeMode="contain"
-        />
+        <TouchableOpacity style={{ paddingTop: 20, paddingBottom: 10 }}>
+          <Image
+            source={require("../../assets/Rectangle 8.png")}
+            style={styles.dropdown_icon}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.on_long_press_options}>
           <Image
             source={require("../../assets/copy.png")}
@@ -244,19 +266,23 @@ export const Message: React.FC<MessageProps> = (props) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <View style={styles.centered_view}>
-          <ScrollView
-            contentContainerStyle={
-              choosenModal
-                ? styles.modal_dislike_details_view
-                : styles.modal_reaction_view
-            }
-            onScroll={handleScroll}
-            scrollEventThrottle={16}
-          >
-            {setModal()}
-          </ScrollView>
-        </View>
+        <TouchableWithoutFeedback onPress={handleTouchOutsideModal}>
+          <View style={styles.overlay}>
+            <TouchableWithoutFeedback>
+              <ScrollView
+                contentContainerStyle={
+                  choosenModal == "MoreBadResponse"
+                    ? styles.modal_dislike_details_view
+                    : styles.modal_reaction_view
+                }
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
+              >
+                {setModal()}
+              </ScrollView>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
     );
   };
@@ -293,6 +319,7 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingTop: 8,
     paddingBottom: 8,
+    paddingLeft: 35,
   },
   on_long_press_options_text: {
     fontSize: 16,
@@ -304,14 +331,13 @@ const styles = StyleSheet.create({
   dropdown_icon: {
     alignSelf: "center",
   },
-  centered_view: {
+  overlay: {
     width: "100%",
     height: "100%",
     backgroundColor: "rgba(0, 0, 0, 0.8)", // semi-transparent dark background
   },
   modal_reaction_view: {
     backgroundColor: "white",
-    padding: 35,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -319,15 +345,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
     width: "100%",
     height: "100%",
-    top: "70%",
+    top: "69%",
     borderRadius: 30,
   },
   modal_dislike_details_view: {
     backgroundColor: "white",
-    padding: 35,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -349,6 +373,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 40,
     gap: 8,
+    paddingTop: 10,
+    paddingLeft: 35,
+    paddingRight: 35,
   },
   modal_dislike_header_text: {
     width: 225,
@@ -362,8 +389,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "flex-start",
-    paddingTop: 24,
+    paddingTop: 15,
     gap: 24,
+    paddingLeft: 35,
+    paddingBottom: 20,
   },
   feedback: {
     alignSelf: "flex-start",
@@ -389,7 +418,10 @@ const styles = StyleSheet.create({
   },
   modal_textbox_more_reason: {
     gap: 4,
-    paddingTop: 24,
+    paddingLeft: 35,
+    paddingRight: 35,
+    marginBottom: 15,
+    paddingBottom: 15,
   },
   modal_textbox_text: {
     fontFamily: "Inter_400Bold",
@@ -408,12 +440,11 @@ const styles = StyleSheet.create({
     color: "blue",
   },
   more_reason_submit_button: {
-    marginTop: 24,
     padding: 12,
     backgroundColor: "#3d7ee0",
     width: 80,
     borderRadius: 20,
-    marginLeft: "80%",
+    marginLeft: "70%",
   },
   submit_text: {
     color: "white",

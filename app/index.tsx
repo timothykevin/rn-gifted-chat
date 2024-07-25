@@ -218,7 +218,6 @@ export default function App() {
           renderActions={() => <InputFile onFileSelected={onSelectFile} />}
           renderSend={renderSend}
           messages={state.messages}
-          messagesContainerStyle={{}}
           placeholder='Type a message or type "/" for commands'
           onSend={onSendText}
           alwaysShowSend
