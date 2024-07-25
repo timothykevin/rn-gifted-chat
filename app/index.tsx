@@ -231,6 +231,7 @@ export default function App() {
           onSend={onSendText}
           alwaysShowSend
           showAvatarForEveryMessage
+          messagesContainerStyle={{ paddingBottom: 65 }}
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
