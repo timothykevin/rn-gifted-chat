@@ -1,6 +1,6 @@
 import { polyfill as polyfillReadableStream } from "react-native-polyfill-globals/src/readable-stream";
 import { polyfill as polyfillFetch } from "react-native-polyfill-globals/src/fetch";
-import { useCallback, useReducer, Dispatch } from "react";
+import { useCallback, useReducer, Dispatch, useState } from "react";
 import { StyleSheet, View, Platform, Text, Image } from "react-native";
 import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
 import { StatusBar } from "expo-status-bar";
@@ -157,16 +157,6 @@ async function send(dispatch: Dispatch<StateAction>) {
   }
 }
 
-const renderSend = (props) => {
-  return (
-    <Send {...props} containerStyle={{ justifyContent: "center" }}>
-      <View style={{ marginTop: 4, marginRight: 9 }}>
-        <Image source={require("../assets/button.png")} style={styles.image} />
-      </View>
-    </Send>
-  );
-};
-
 export default function App() {
   if (Platform.OS !== "web") {
     polyfillFetch();
@@ -181,6 +171,25 @@ export default function App() {
     isLoadingEarlier: false,
     isTyping: false,
   });
+
+  const [inputText, setInputText] = useState("");
+
+  const renderSend = (props) => {
+    return (
+      <Send {...props} containerStyle={{ justifyContent: "center" }}>
+        <View style={{ marginTop: 4, marginRight: 9 }}>
+          <Image
+            source={
+              inputText.trim().length > 0
+                ? require("../assets/button.png")
+                : require("../assets/microphone.png")
+            }
+            style={styles.image}
+          />
+        </View>
+      </Send>
+    );
+  };
 
   const onSendText = useCallback(
     (messages: TMessage[]) => {
@@ -226,6 +235,7 @@ export default function App() {
           user={user}
           isTyping={state.isTyping}
           renderAvatarOnTop
+          onInputTextChanged={(text) => setInputText(text)}
           renderChatEmpty={() => <WelcomePage />}
           renderInputToolbar={(props) => (
             <InputFooter
@@ -266,11 +276,19 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   image: {
-    width: 32,
-    height: 32,
+    width: 25,
+    height: 25,
   },
   avatar_bot: {
     width: 10,
     height: 10,
+  },
+  text_input: {
+    width: 335,
+    height: 64,
+    padding: 10,
+    margin: 24,
+    borderWidth: 1,
+    borderRadius: 6,
   },
 });
