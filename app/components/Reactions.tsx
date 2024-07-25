@@ -213,7 +213,8 @@ const styles = StyleSheet.create({
     padding: 17,
     gap: 12,
     width: 287,
-    height: 326,
+    height: 280,
+    borderColor: "#DCDCDC",
   },
   modal_view: {
     margin: 20,
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
     paddingLeft: 13,
     borderRadius: 8,
     borderWidth: 1,
+    borderColor: "#DCDCDC",
   },
   feedback_choosen: {
     alignSelf: "flex-start",
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
     paddingLeft: 13,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "blue",
+    borderColor: "#0304EF",
   },
   modal_text: {
     marginBottom: 15,
