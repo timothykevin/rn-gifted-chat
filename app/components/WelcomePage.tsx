@@ -3,15 +3,21 @@ import {
   View,
   StyleSheet,
   Text,
-  Button,
   TouchableOpacity,
   ScrollView,
+  Platform,
 } from "react-native";
 
-export const WelcomePage = (props) => {
+export const WelcomePage = () => {
   const renderWelcomePage = () => {
     const view = (
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={
+          Platform.OS !== "android"
+            ? styles.container
+            : styles.container_android
+        }
+      >
         <Text style={styles.title}>Ask anything like we do</Text>
         <View style={styles.predefined_question_view}>
           <TouchableOpacity style={styles.predefined_question_button}>
@@ -60,6 +66,12 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     transform: [{ scaleX: 1 }, { scaleY: -1 }],
+  },
+  container_android: {
+    width: 375,
+    height: 530,
+    paddingRight: 20,
+    transform: [{ scaleX: -1 }, { scaleY: -1 }],
   },
   title: {
     width: 335,
