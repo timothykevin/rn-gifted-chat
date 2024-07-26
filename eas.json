@@ -4,11 +4,7 @@
       "android": {
         "buildType": "apk"
       },
-      "env": {
-        "EXPO_PUBLIC_AUTH_TOKEN": "6167e615-f9c5-4cdc-8aa1-5caf51acd63e",
-        "EXPO_PUBLIC_API_KEY": "f3a56f3c-491c-46a6-aaad-3bf6a5718cee",
-        "EXPO_PUBLIC_API_URL": "https://demo-llm-gat-be.glair.ai"
-      }
+      "env": {}
     },
     "preview2": {
       "android": {
