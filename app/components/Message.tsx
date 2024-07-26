@@ -10,6 +10,7 @@ import {
   TextInput,
   Pressable,
   TouchableWithoutFeedback,
+  Platform,
 } from "react-native";
 import { DocumentPickerAsset } from "expo-document-picker";
 import {
@@ -65,7 +66,9 @@ export const Message: React.FC<MessageProps> = (props) => {
     return (
       <Bubble
         {...bubbleProps}
-        onLongPress={() => setModalVisible(true)}
+        onLongPress={() =>
+          Platform.OS !== "web" ? setModalVisible(true) : null
+        }
         wrapperStyle={{
           left: {
             width: "100%",
