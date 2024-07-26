@@ -119,7 +119,7 @@ export const Reactions: React.FC<ReactionsProps> = (props) => {
           onRequestClose={() => setModalVisible(!modalVisible)}
         >
           <View style={styles.centered_view}>
-            <View style={styles.modalView}>
+            <View style={styles.modal_view}>
               <View style={styles.modal_header}>
                 <Text style={styles.modal_header_text}>More reason</Text>
                 <TouchableOpacity onPress={() => setModalVisible(false)}>
@@ -213,9 +213,10 @@ const styles = StyleSheet.create({
     padding: 17,
     gap: 12,
     width: 287,
-    height: 326,
+    height: 280,
+    borderColor: "#DCDCDC",
   },
-  modalView: {
+  modal_view: {
     margin: 20,
     backgroundColor: "white",
     padding: 35,
@@ -270,6 +271,7 @@ const styles = StyleSheet.create({
     paddingLeft: 13,
     borderRadius: 8,
     borderWidth: 1,
+    borderColor: "#DCDCDC",
   },
   feedback_choosen: {
     alignSelf: "flex-start",
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
     paddingLeft: 13,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "blue",
+    borderColor: "#0304EF",
   },
   modal_text: {
     marginBottom: 15,
