@@ -27,12 +27,18 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.rian.nugroho7773.rngiftedchat"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "47987805-b5a5-4166-ae3d-de38347ca5cd"
+      }
     }
   }
 }
