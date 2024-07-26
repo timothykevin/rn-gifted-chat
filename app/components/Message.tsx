@@ -67,7 +67,9 @@ export const Message: React.FC<MessageProps> = (props) => {
       <Bubble
         {...bubbleProps}
         onLongPress={() =>
-          Platform.OS !== "web" ? setModalVisible(true) : null
+          Platform.OS !== "web" && props.currentMessage.user._id !== 1
+            ? setModalVisible(true)
+            : null
         }
         wrapperStyle={{
           left: {
