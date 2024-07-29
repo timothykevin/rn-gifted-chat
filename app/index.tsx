@@ -207,6 +207,13 @@ export default function App() {
       isTyping={state.isTyping}
       files={state.files}
       onSelectFile={onSelectFile}
+      // listOfPrompt={[
+      //   {
+      //     title: "Question and Answer",
+      //     description:
+      //       "Ask VonBot® about legal terms and all matters related to the Von Wobeser y Sierra Firm",
+      //   },
+      // ]}
     />
   );
 }

@@ -11,11 +11,11 @@ import { TMessage } from "./types";
 import { InputFooter } from "./InputFooter";
 
 interface GdplabsChatUIProps {
-  listOfPrompt?: string[];
+  listOfPrompt?: any[];
   messages: TMessage[];
   user: { _id: number; name: string };
   isTyping: boolean;
-  files: any;
+  files: any[];
   onSendText(messages: TMessage[]): void;
   onDeleteFile(fileName: any): void;
   onSelectFile(): void;
@@ -61,9 +61,9 @@ export const GdplabsChatUI: React.FC<GdplabsChatUIProps> = (props) => {
           isTyping={props.isTyping}
           renderAvatarOnTop
           onInputTextChanged={(text) => setInputText(text)}
-          renderChatEmpty={() =>
-            props.listOfPrompt ? props.listOfPrompt : <WelcomePage />
-          }
+          renderChatEmpty={() => (
+            <WelcomePage listOfPrompt={props.listOfPrompt} />
+          )}
           renderInputToolbar={(inputToolbarProps) => (
             <InputFooter
               {...inputToolbarProps}

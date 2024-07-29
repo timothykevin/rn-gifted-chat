@@ -8,7 +8,49 @@ import {
   Platform,
 } from "react-native";
 
-export const WelcomePage = () => {
+interface WelcomePageProps {
+  listOfPrompt?: string[];
+}
+
+export const WelcomePage: React.FC<WelcomePageProps> = (props) => {
+  const questions = props.listOfPrompt
+    ? props.listOfPrompt
+    : [
+        {
+          title: "Question and Answer",
+          description:
+            "Ask VonBot® about legal terms and all matters related to the Von Wobeser y Sierra Firm",
+        },
+        {
+          title: "Judicial Precedent",
+          description:
+            "Identify binding precedents issued by the Mexican Supreme Court",
+        },
+        {
+          title: "Summarization",
+          description:
+            "Summarize the commission's decision regarding Metal Packaging",
+        },
+        {
+          title: "Document Draft",
+          description:
+            "Draft a one-page memorandum about Legal Obligations in Foreign Investment Matters",
+        },
+      ];
+
+  const PredefinedQuestions = () => (
+    <View style={styles.predefined_question_view}>
+      {questions.map((question, index) => (
+        <TouchableOpacity key={index} style={styles.predefined_question_button}>
+          <Text style={styles.predefined_question_title}>{question.title}</Text>
+          <Text style={styles.predefined_question_description}>
+            {question.description}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+
   const renderWelcomePage = () => {
     const view = (
       <ScrollView
@@ -19,38 +61,7 @@ export const WelcomePage = () => {
         }
       >
         <Text style={styles.title}>Ask anything like we do</Text>
-        <View style={styles.predefined_question_view}>
-          <TouchableOpacity style={styles.predefined_question_button}>
-            <Text style={styles.predefined_question_title}>
-              Question and Answer
-            </Text>
-            <Text style={styles.predefined_question_description}>
-              Ask VonBot® about legal terms and all mattersrelated to the Von
-              Wobeser y Sierra Firm
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.predefined_question_button}>
-            <Text style={styles.predefined_question_title}>
-              Judicial Precedent
-            </Text>
-            <Text style={styles.predefined_question_description}>
-              Identify binding precedents issued bythe Mexican Supreme Court
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.predefined_question_button}>
-            <Text style={styles.predefined_question_title}>Summarization</Text>
-            <Text style={styles.predefined_question_description}>
-              Summarize the commission's decision regarding Metal Packaging
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.predefined_question_button}>
-            <Text style={styles.predefined_question_title}>Document Draft</Text>
-            <Text style={styles.predefined_question_description}>
-              Draft a one-page memorandum about LegalObligations in Foreign
-              Investment Matters
-            </Text>
-          </TouchableOpacity>
-        </View>
+        {PredefinedQuestions()}
       </ScrollView>
     );
     return view;
