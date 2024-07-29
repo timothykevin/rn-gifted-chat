@@ -8,15 +8,16 @@ import { Message } from "./Message";
 import { WelcomePage } from "./WelcomePage";
 import { Header } from "./Header";
 import { TMessage } from "./types";
+import { InputFooter } from "./InputFooter";
 
 interface GdplabsChatUIProps {
-  welcomePage?: React.ReactNode;
+  listOfPrompt?: string[];
   messages: TMessage[];
   user: { _id: number; name: string };
   isTyping: boolean;
-  onInputTextChanged?(text: string): void;
-  renderInputToolbar(props: any): React.ReactNode;
+  files: any;
   onSendText(messages: TMessage[]): void;
+  onDeleteFile(fileName: any): void;
   onSelectFile(): void;
 }
 
@@ -59,15 +60,17 @@ export const GdplabsChatUI: React.FC<GdplabsChatUIProps> = (props) => {
           user={props.user}
           isTyping={props.isTyping}
           renderAvatarOnTop
-          onInputTextChanged={(text) =>
-            props.onInputTextChanged
-              ? props.onInputTextChanged
-              : setInputText(text)
-          }
+          onInputTextChanged={(text) => setInputText(text)}
           renderChatEmpty={() =>
-            props.welcomePage ? props.welcomePage : <WelcomePage />
+            props.listOfPrompt ? props.listOfPrompt : <WelcomePage />
           }
-          renderInputToolbar={props.renderInputToolbar}
+          renderInputToolbar={(inputToolbarProps) => (
+            <InputFooter
+              {...inputToolbarProps}
+              files={props.files}
+              onDelete={props.onDeleteFile}
+            />
+          )}
           renderMessage={(props: MessageProps<TMessage>) => (
             <Message
               {...props}

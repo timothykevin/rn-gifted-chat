@@ -198,19 +198,14 @@ export default function App() {
 
   return (
     <GdplabsChatUI
-      renderInputToolbar={(props) => (
-        <InputFooter
-          {...props}
-          files={state.files}
-          onDelete={(fileName) =>
-            dispatch({ type: ActionKind.REMOVE_FILE, payload: fileName })
-          }
-        />
-      )}
+      onDeleteFile={(fileName) =>
+        dispatch({ type: ActionKind.REMOVE_FILE, payload: fileName })
+      }
       messages={state.messages}
       onSendText={onSendText}
       user={user}
       isTyping={state.isTyping}
+      files={state.files}
       onSelectFile={onSelectFile}
     />
   );
