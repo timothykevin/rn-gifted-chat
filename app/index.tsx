@@ -1,18 +1,14 @@
 import { polyfill as polyfillReadableStream } from "react-native-polyfill-globals/src/readable-stream";
 import { polyfill as polyfillFetch } from "react-native-polyfill-globals/src/fetch";
-import { useCallback, useReducer, Dispatch, useState } from "react";
-import { StyleSheet, View, Platform, Text, Image } from "react-native";
+import { useCallback, useReducer, Dispatch } from "react";
+import { Platform } from "react-native";
 import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
-import { StatusBar } from "expo-status-bar";
-import { GiftedChat, MessageProps, Send } from "react-native-gifted-chat";
+import { GiftedChat } from "react-native-gifted-chat";
 import { TextDecoder } from "text-encoding";
 
-import { InputFile } from "./components/InputFile";
-import { InputFooter } from "./components/InputFooter";
-import { Message } from "./components/Message";
-import { WelcomePage } from "./components/WelcomePage";
-import { Header } from "./components/Header";
+import { GdplabsChatUI } from "./components/GdplabsChatUI";
 import { ActionKind, IState, StateAction, TMessage } from "./components/types";
+import { InputFooter } from "./components/InputFooter";
 
 const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
@@ -34,6 +30,7 @@ const ai = {
 };
 
 const decoder = new TextDecoder();
+
 export function decodeAIStreamChunk(chunk?: Uint8Array): string {
   return chunk ? decoder.decode(chunk) : "";
 }
@@ -172,25 +169,6 @@ export default function App() {
     isTyping: false,
   });
 
-  const [inputText, setInputText] = useState("");
-
-  const renderSend = (props) => {
-    return (
-      <Send {...props} containerStyle={{ justifyContent: "center" }}>
-        <View style={{ marginTop: 4, marginRight: 9 }}>
-          <Image
-            source={
-              inputText.trim().length > 0
-                ? require("../assets/button.png")
-                : require("../assets/microphone.png")
-            }
-            style={styles.image}
-          />
-        </View>
-      </Send>
-    );
-  };
-
   const onSendText = useCallback(
     (messages: TMessage[]) => {
       if (state.files.length) {
@@ -219,76 +197,23 @@ export default function App() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Header></Header>
-      <View style={{ width: "100%", flex: 1 }}>
-        <GiftedChat<TMessage>
-          renderActions={() => <InputFile onFileSelected={onSelectFile} />}
-          renderSend={renderSend}
-          messages={state.messages}
-          placeholder='Type a message or type "/" for commands'
-          onSend={onSendText}
-          alwaysShowSend
-          showAvatarForEveryMessage
-          messagesContainerStyle={{ paddingBottom: 65 }}
-          user={user}
-          isTyping={state.isTyping}
-          renderAvatarOnTop
-          onInputTextChanged={(text) => setInputText(text)}
-          renderChatEmpty={() => <WelcomePage />}
-          renderInputToolbar={(props) => (
-            <InputFooter
-              {...props}
-              files={state.files}
-              onDelete={(fileName) =>
-                dispatch({ type: ActionKind.REMOVE_FILE, payload: fileName })
-              }
-            />
-          )}
-          renderMessage={(props: MessageProps<TMessage>) => (
-            <Message
-              {...props}
-              position="left"
-              userType={props.user._id === 1 ? "human" : "ai"}
-              attachments={props.currentMessage?.attachments}
-            />
-          )}
-        />
-      </View>
-      <Text style={styles.text}>
-        Information from AI about people, places, or facts may be inaccurate.
-        Powered by GPT technology.
-      </Text>
-    </View>
+    <GdplabsChatUI
+      onDeleteFile={(fileName) =>
+        dispatch({ type: ActionKind.REMOVE_FILE, payload: fileName })
+      }
+      messages={state.messages}
+      onSendText={onSendText}
+      user={user}
+      isTyping={state.isTyping}
+      files={state.files}
+      onSelectFile={onSelectFile}
+      // listOfPrompt={[
+      //   {
+      //     title: "Question and Answer",
+      //     description:
+      //       "Ask VonBot® about legal terms and all matters related to the Von Wobeser y Sierra Firm",
+      //   },
+      // ]}
+    />
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-  },
-  text: {
-    fontFamily: "Inter_400Regular",
-    fontSize: 14,
-    paddingBottom: 8,
-    textAlign: "center",
-  },
-  image: {
-    width: 25,
-    height: 25,
-  },
-  avatar_bot: {
-    width: 10,
-    height: 10,
-  },
-  text_input: {
-    width: 335,
-    height: 64,
-    padding: 10,
-    margin: 24,
-    borderWidth: 1,
-    borderRadius: 6,
-  },
-});

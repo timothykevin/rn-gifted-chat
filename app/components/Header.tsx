@@ -8,7 +8,7 @@ import {
   Image,
 } from "react-native";
 
-export const Header = (props) => {
+export const Header = () => {
   const renderHeader = () => {
     const view = (
       <View style={styles.container}>
