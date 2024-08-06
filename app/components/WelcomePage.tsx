@@ -51,7 +51,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = (props) => {
     return view;
   };
 
-  return <View>{renderWelcomePage()}</View>;
+  return <View>{props.listOfPrompt ? null : renderWelcomePage()}</View>;
 };
 
 const styles = StyleSheet.create({
