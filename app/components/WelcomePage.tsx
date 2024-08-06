@@ -17,24 +17,8 @@ export const WelcomePage: React.FC<WelcomePageProps> = (props) => {
     ? props.listOfPrompt
     : [
         {
-          title: "Question and Answer",
-          description:
-            "Ask VonBot® about legal terms and all matters related to the Von Wobeser y Sierra Firm",
-        },
-        {
-          title: "Judicial Precedent",
-          description:
-            "Identify binding precedents issued by the Mexican Supreme Court",
-        },
-        {
-          title: "Summarization",
-          description:
-            "Summarize the commission's decision regarding Metal Packaging",
-        },
-        {
-          title: "Document Draft",
-          description:
-            "Draft a one-page memorandum about Legal Obligations in Foreign Investment Matters",
+          title: "",
+          description: "",
         },
       ];
 
