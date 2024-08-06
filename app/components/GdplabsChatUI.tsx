@@ -11,7 +11,7 @@ import { TMessage } from "./types";
 import { InputFooter } from "./InputFooter";
 
 interface GdplabsChatUIProps {
-  listOfPrompt?: any[];
+  listOfPrompt: any[];
   messages: TMessage[];
   user: { _id: number; name: string };
   isTyping: boolean;
