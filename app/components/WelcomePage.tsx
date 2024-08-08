@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
   title: {
     width: 335,
     height: 28,
-    fontFamily: "Inter_700Bold",
     fontSize: 24,
     fontWeight: "bold",
     lineHeight: 28,
@@ -93,14 +92,12 @@ const styles = StyleSheet.create({
     margin: 4,
   },
   predefined_question_title: {
-    fontFamily: "Inter_700Bold",
     fontSize: 16,
     fontWeight: "bold",
     lineHeight: 19.84,
     alignContent: "center",
   },
   predefined_question_description: {
-    fontFamily: "Inter_400Bold",
     fontSize: 14,
     lineHeight: 19.88,
     alignContent: "center",

@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
     alignContent: "center",
   },
   setting_text: {
-    fontFamily: "Inter_600Bold",
     fontSize: 16,
     fontWeight: "bold",
   },

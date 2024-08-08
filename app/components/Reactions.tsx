@@ -252,7 +252,6 @@ const styles = StyleSheet.create({
     height: 20,
   },
   tell_us_text: {
-    fontFamily: "Inter_400Regular",
     fontSize: 14,
     fontWeight: 400,
   },
@@ -306,7 +305,6 @@ const styles = StyleSheet.create({
   modal_header_text: {
     width: 225,
     height: 24,
-    fontFamily: "Inter_600Bold",
     fontSize: 20,
     fontWeight: "bold",
     lineHeight: 24,
@@ -328,7 +326,6 @@ const styles = StyleSheet.create({
     paddingTop: 24,
   },
   modal_textbox_text: {
-    fontFamily: "Inter_400Bold",
     fontSize: 14,
     fontWeight: "bold",
   },

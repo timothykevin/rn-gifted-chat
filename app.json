@@ -2,7 +2,7 @@
   "expo": {
     "name": "rn-gifted-chat",
     "slug": "rn-gifted-chat",
-    "schema": "glair",
+    "scheme": "glair",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,8 @@
         {
           "iCloudContainerEnvironment": "Production"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "ios": {
       "supportsTablet": true

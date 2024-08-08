@@ -328,7 +328,6 @@ const styles = StyleSheet.create({
   },
   on_long_press_options_text: {
     fontSize: 16,
-    fontFamily: "Inter_400Regular",
     fontWeight: "400",
     lineHeight: 20,
     color: "black",
@@ -385,7 +384,6 @@ const styles = StyleSheet.create({
   modal_dislike_header_text: {
     width: 225,
     height: 24,
-    fontFamily: "Inter_600Bold",
     fontSize: 20,
     fontWeight: "bold",
     lineHeight: 24,
@@ -429,7 +427,6 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   modal_textbox_text: {
-    fontFamily: "Inter_400Bold",
     fontSize: 14,
     fontWeight: "bold",
   },
