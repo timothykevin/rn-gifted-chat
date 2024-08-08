@@ -9,6 +9,7 @@ import { WelcomePage } from "./WelcomePage";
 import { Header } from "./Header";
 import { TMessage } from "./types";
 import { InputFooter } from "./InputFooter";
+import { RecordButton } from "./RecordButton";
 
 interface GdplabsChatUIProps {
   listOfPrompt: any[];
@@ -19,26 +20,50 @@ interface GdplabsChatUIProps {
   onSendText(messages: TMessage[]): void;
   onDeleteFile(fileName: any): void;
   onSelectFile(): void;
+  onInputAudio?(): void;
 }
 
 export const GdplabsChatUI: React.FC<GdplabsChatUIProps> = (props) => {
   const [inputText, setInputText] = useState("");
 
-  const renderSend = (props) => {
-    return (
+  // const renderSend = (props) => {
+  //   return (
+  //     <Send {...props} containerStyle={{ justifyContent: "center" }}>
+  //       <View style={{ marginTop: 4, marginRight: 9 }}>
+  //         <Image
+  //           source={
+  //             inputText.trim().length > 0
+  //               ? require("../../assets/button.png")
+  //               : require("../../assets/microphone.png")
+  //           }
+  //           style={styles.image}
+  //         />
+  //       </View>
+  //     </Send>
+  //   );
+  // };
+
+  const renderMainButton = (props: any) => {
+    return inputText.trim() ? (
       <Send {...props} containerStyle={{ justifyContent: "center" }}>
         <View style={{ marginTop: 4, marginRight: 9 }}>
           <Image
-            source={
-              inputText.trim().length > 0
-                ? require("../../assets/button.png")
-                : require("../../assets/microphone.png")
-            }
+            source={require("../../assets/button.png")}
             style={styles.image}
           />
         </View>
       </Send>
+    ) : (
+      <RecordButton />
     );
+  };
+
+  const handleMainAction = (messages: any) => {
+    if (!inputText) {
+      props.onInputAudio();
+    } else {
+      props.onSendText(messages);
+    }
   };
 
   return (
@@ -50,10 +75,10 @@ export const GdplabsChatUI: React.FC<GdplabsChatUIProps> = (props) => {
           renderActions={() => (
             <InputFile onFileSelected={props.onSelectFile} />
           )}
-          renderSend={renderSend}
+          renderSend={renderMainButton}
           messages={props.messages}
           placeholder='Type a message or type "/" for commands'
-          onSend={props.onSendText}
+          onSend={handleMainAction}
           alwaysShowSend
           showAvatarForEveryMessage
           messagesContainerStyle={{ paddingBottom: 65 }}
@@ -96,7 +121,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontFamily: "Inter_400Regular",
     fontSize: 14,
     paddingBottom: 8,
     textAlign: "center",

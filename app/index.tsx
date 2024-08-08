@@ -8,7 +8,6 @@ import { TextDecoder } from "text-encoding";
 
 import { GdplabsChatUI } from "./components/GdplabsChatUI";
 import { ActionKind, IState, StateAction, TMessage } from "./components/types";
-import { InputFooter } from "./components/InputFooter";
 
 const uuidv4 = () => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
